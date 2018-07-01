@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %} Restaurant List | {{ block.super }} {% endblock title %}
+
+{% block content %}
+    <h1> Restaurant List </h1>
+    <ul>
+        {% for restaurant in restaurant_list %}
+            <li><a href="/restaurantlist/{{ restaurant.slug }}/"> {{ restaurant }} </a> </li>
+            <li> {{ restaurant.name }} -- {{ restaurant.location }} -- {{ restaurant.category }} -- {{ restaurant.timestamp }} -- {{ restaurant.updated }} </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

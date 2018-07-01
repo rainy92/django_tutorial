@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>{{ block.super }}</h3>
+
+    <h1> Welcome to our Restaurant's {{ home_var }} </h1>
+    <p> Here will be the details of Restaurant </p>
+    {% if bool_item %}
+        <p> Random number is : {{ random_num }} </p>
+    {% endif %}
+
+    {% for item in menu_list %}
+        {% if item|divisibleby:"2" %}
+            Even number is :
+            {% verbatim %}
+                {% comment %}
+                    <p>
+                        This is just a comment to show even numbers
+                    </p>
+                {% endcomment %}
+            {% endverbatim %}
+        {% endif %}
+        {{ item }} <br>
+    {% endfor %}
+
+{% endblock content %}
