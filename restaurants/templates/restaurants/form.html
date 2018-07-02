@@ -1,7 +1,14 @@
 {% extends 'base.html' %} 
 {% block title %} Add Restaurant | {{ block.super }} {% endblock title %} 
 {% block content %}
+<h6> <a href="{% url 'logout' %}"> Logout </a> </h6>
+
 <h1> Add Restaurant </h1>
+
+{% if form.errors.non_field_errors %}
+    {{ form.errors.non_field_errors }}
+{% endif %}
+
 <form method="POST"> 
     {% csrf_token %}
     <!-- <input type="text" name="name" placeholder="Title" id="title">

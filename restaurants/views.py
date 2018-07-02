@@ -1,8 +1,10 @@
-from django.views import generic
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
-from .models import RestaurantLocation
 from django.db.models import Q
-from .forms import RestaurantCreateForm
+from django.views import generic
+from .models import RestaurantLocation
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from .forms import RestaurantCreateForm, RestaurantLocationCreateForm
 
 
 def restaurant_listview(request):
@@ -14,19 +16,31 @@ def restaurant_listview(request):
     return render(request, template_name, context)
 
 
+@login_required(login_url='/login/')
 def restaurant_createview(request):
-    form = RestaurantCreateForm(request.POST or None)
+    form = RestaurantLocationCreateForm(request.POST or None)
+    errors = None
     if form.is_valid():
-        obj = RestaurantLocation.objects.create(
-            name = form.cleaned_data.get('name'),
-            location=form.cleaned_data.get('location'),
-            category=form.cleaned_data.get('category'),
-        )
-    return HttpResponseRedirect('/restaurantlist/')
+        print("form is valid")
+        if request.user.is_authenticated:
+            print("authentication:", request.user.is_authenticated)
+            instance = form.save(commit=False)
+            instance.owner = request.user
+            print("owner:", instance.owner)
+            instance.save()
+            # obj = RestaurantLocation.objects.create(
+            #     name = form.cleaned_data.get('name'),
+            #     location=form.cleaned_data.get('location'),
+            #     category=form.cleaned_data.get('category')
+            # )
+            return HttpResponseRedirect('/restaurants/')
+        else:
+            return HttpResponseRedirect('/login/')
     if form.errors:
         print(form.errors)
+        errors = form.errors
     template_name = 'restaurants/form.html'
-    context ={'form': form}
+    context ={'form': form, 'errors': errors}
     return render(request, template_name, context)
 
 
@@ -45,14 +59,16 @@ class RestuarantListview(generic.ListView):
 
 class RestaurantDetailView(generic.DetailView):
     queryset = RestaurantLocation.objects.all()
-    
-    # def get_context_data(self, *args, **kwargs):
-    #     print(self.kwargs)
-    #     context = super(RestaurantDetailView, self).get_context_data(*args, **kwargs)
-    #     return context
-
-    # def get_object(self, *args, **kwargs):
-    #     slug = self.kwargs.get("slug")
-    #     obj = get_object_or_404(RestaurantLocation, id=slug)
-    #     return obj  
         
+
+class RestaurantCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = RestaurantLocationCreateForm
+    template_name = 'restaurants/form.html'
+    success_url = '/restaurants/'
+    login_url = '/login/'
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.owner = self.request.user
+
+        return super(RestaurantCreateView, self).form_valid(form)
