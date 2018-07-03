@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'restaurants',
+    'menus',
 ]
 
 MIDDLEWARE = [
@@ -110,3 +111,5 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/restaurants/create/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+AUTH_USER_MODEL = 'auth.User'

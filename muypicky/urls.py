@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^login/$', auth_views.LoginView.as_view(), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
     url(r'^restaurants/', include('restaurants.urls', namespace="restaurants")),
+    url(r'^menus/', include('menus.urls', namespace="menus")),
 ]

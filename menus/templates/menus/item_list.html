@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %} Menus List | {{ block.super }} {% endblock title %}
+
+{% block content %}
+    <h1> Menu List </h1>
+    <ul>
+        {% for menu in menus_list %}
+        
+            <li><a href="{{ menu.get_absolute_url }}"> {{ menu.name }} </a> </li>
+
+            {% if menu.contents %}
+            Contents:
+            <ul>
+                {% for item in menu.get_content %}
+                    <li> {{ item }} </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if menu.excludes %}
+            Excludes:
+            <ul>
+                {% for item in menu.get_excludes %}
+                    <li> {{ item }} </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}
