@@ -91,3 +91,8 @@ class RestaurantUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = RestaurantLocationCreateForm
     template_name = 'form.html'
     model = RestaurantLocation
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(RestaurantCreateView, self).get_context_data(*args, **kwargs)
+        context['title']= "Update Restaurant"
+        return context
